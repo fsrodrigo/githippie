@@ -53,7 +53,4 @@ public class Tarefa {
 	public void setTarefaAberta(boolean tarefaAberta) {
 		this.tarefaAberta = tarefaAberta;
 	}
-	
-	
-
 }

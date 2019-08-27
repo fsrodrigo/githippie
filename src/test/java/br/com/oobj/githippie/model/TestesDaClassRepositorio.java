@@ -12,28 +12,28 @@ public class TestesDaClassRepositorio {
 	public void testarMetodoSetTipoRepositorioDaClassRepositrioPassar0EretornarPublico() {
 		repositorio = new Repositorio();
 		
-		int valorInformado = 0;
+		TipoRepositorio valorInformado = TipoRepositorio.PUBLICO;
 		
 		repositorio.setTipoRepositorio(valorInformado);
 		
-		String tipoRepositorioEsperado = "Público";
-		String tipoRepositorioRetornado = repositorio.getTipoRepositorio();
+		String tipoRepositorioEsperado = "PUBLICO";
+		TipoRepositorio tipoRepositorioRetornado = repositorio.getTipoRepositorio();
 		
-		assertEquals(tipoRepositorioEsperado, tipoRepositorioRetornado);
+		assertEquals(tipoRepositorioEsperado, String.valueOf(tipoRepositorioRetornado));
 	}
 	
 	@Test
 	public void testarMetodoSetTipoRepositorioDaClassRepositrioPassar1EretornarPrivado() {
 		repositorio = new Repositorio();
 		
-		int valorInformado = 1;
+		TipoRepositorio valorInformado = TipoRepositorio.PRIVADO;
 		
 		repositorio.setTipoRepositorio(valorInformado);
 		
-		String tipoRepositorioEsperado = "Privado";
-		String tipoRepositorioRetornado = repositorio.getTipoRepositorio();
+		String tipoRepositorioEsperado = "PRIVADO";
+		TipoRepositorio tipoRepositorioRetornado = repositorio.getTipoRepositorio();
 		
-		assertEquals(tipoRepositorioEsperado, tipoRepositorioRetornado);
+		assertEquals(tipoRepositorioEsperado, String.valueOf(tipoRepositorioRetornado));
 	}
 
 }

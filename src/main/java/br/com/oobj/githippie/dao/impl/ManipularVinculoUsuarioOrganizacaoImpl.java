@@ -54,7 +54,7 @@ public class ManipularVinculoUsuarioOrganizacaoImpl implements ManipularVinculoU
 			PreparedStatement ps = conn.prepareStatement(sql);
 
 			ps.setInt(1, organizacao.getIdOrganizacao());
-			ResultSet rs = conn.prepareStatement(sql).executeQuery();
+			ResultSet rs = ps.executeQuery();
 			conn.close();
 
 			while (rs.next()) {
@@ -74,6 +74,33 @@ public class ManipularVinculoUsuarioOrganizacaoImpl implements ManipularVinculoU
 		}
 
 		return organizacao;
+	}
+
+	public List<VinculoUsuarioOrganizacao> buscarVinculoPorQualquerCampo(String coluna, String valor) {
+		String sql = "SELECT * FROM usuarios_organizacao WHERE " + coluna + " = \'" + valor + "\';";
+		List<VinculoUsuarioOrganizacao> vinculos = new ArrayList<VinculoUsuarioOrganizacao>();
+		try {
+			conexao = new ConexaoJDBC();
+			Connection conn = conexao.getConnection();
+			ResultSet rs = conn.prepareStatement(sql).executeQuery();
+			conn.close();
+
+			while (rs.next()) {
+				usuarioDAO = new ManipularUsuarioImpl();
+				organizacaoDAO = new ManipularOrganizacaoImpl();
+				VinculoUsuarioOrganizacao vinculo = new VinculoUsuarioOrganizacao();
+				vinculo.setId(rs.getInt("id"));
+				vinculo.setUsuario(usuarioDAO.consultarPorId(rs.getInt("id_usuario")));
+				vinculo.setOrganizacao(organizacaoDAO.consultarPorId(rs.getInt("id_organizacao")));
+				vinculo.setIsAdminBool(rs.getBoolean("adm"));
+				vinculos.add(vinculo);
+			}
+
+		} catch (Exception e) {
+			System.out.println("Falha ao obter a lista com todos vinculos... " + e);
+		}
+		return vinculos;
+
 	}
 
 	public List<VinculoUsuarioOrganizacao> listarTodosVinculos() {
@@ -116,7 +143,7 @@ public class ManipularVinculoUsuarioOrganizacaoImpl implements ManipularVinculoU
 
 			ps.setInt(1, usuario.getIdUsuario());
 
-			ResultSet rs = conn.prepareStatement(sql).executeQuery();
+			ResultSet rs = ps.executeQuery();
 			conn.close();
 
 			while (rs.next()) {
@@ -140,41 +167,40 @@ public class ManipularVinculoUsuarioOrganizacaoImpl implements ManipularVinculoU
 		return usuario;
 	}
 
-	public void editarPermissaoVinculoUsuarioOrganizacao(int idVinculo, Usuario usuario, Organizacao organizacao,
-			Boolean isAdmin) {
+	public void editarPermissaoVinculoUsuarioOrganizacao(VinculoUsuarioOrganizacao vinculo) {
 		String sql = "UPDATE usuarios_organizacao SET id_usuario = ?, id_organizacao = ?, adm = ? WHERE id = ?;";
 
 		try {
 			conexao = new ConexaoJDBC();
 			PreparedStatement ps = conexao.getConnection().prepareStatement(sql);
-			ps.setInt(1, usuario.getIdUsuario());
-			ps.setInt(2, organizacao.getIdOrganizacao());
-			ps.setBoolean(3, isAdmin);
-			ps.setInt(4, idVinculo);
+			ps.setInt(1, vinculo.getUsuario().getIdUsuario());
+			ps.setInt(2, vinculo.getOrganizacao().getIdOrganizacao());
+			ps.setBoolean(3, vinculo.getIsAdmin());
+			ps.setInt(4, vinculo.getId());
 			ps.executeUpdate();
 
 		} catch (Exception e) {
-			System.out.println("Falha Editar o vinculo do usuário: " + usuario.getNomeUsuario() + " na empresa: "
-					+ organizacao.getNomeOrganizacao());
+			System.out.println("Falha Editar o vinculo do usuário: " + vinculo.getUsuario().getNomeUsuario()
+					+ " na empresa: " + vinculo.getOrganizacao().getNomeOrganizacao());
 			System.out.println(e);
 		}
 
 	}
 
-	public void removerVinculoUsuarioOrganizacao(int idVinculo, Usuario usuario, Organizacao organizacao) {
+	public void removerVinculoUsuarioOrganizacao(VinculoUsuarioOrganizacao vinculo) {
 		String sql = "DELETE FROM usuarios_organizacao WHERE id_usuario = ? AND id_organizacao = ? AND id = ?;";
 
 		try {
 			conexao = new ConexaoJDBC();
 			PreparedStatement ps = conexao.getConnection().prepareStatement(sql);
-			ps.setInt(1, usuario.getIdUsuario());
-			ps.setInt(2, organizacao.getIdOrganizacao());
-			ps.setInt(3, idVinculo);
+			ps.setInt(1, vinculo.getUsuario().getIdUsuario());
+			ps.setInt(2, vinculo.getOrganizacao().getIdOrganizacao());
+			ps.setInt(3, vinculo.getId());
 			ps.executeUpdate();
 
 		} catch (Exception e) {
-			System.out.println("Falha Editar o Remover o vinculo do usuário: " + usuario.getNomeUsuario()
-					+ " na empresa: " + organizacao.getNomeOrganizacao());
+			System.out.println("Falha Editar o Remover o vinculo do usuário: " + vinculo.getUsuario().getNomeUsuario()
+					+ " na empresa: " + vinculo.getOrganizacao().getNomeOrganizacao());
 			System.out.println(e);
 		}
 	}

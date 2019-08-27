@@ -12,11 +12,13 @@ public interface ManipularVinculoUsuarioOrganizacao {
 	
 	public Organizacao listarUsuariosVinculadosPorOrganizacao(Organizacao organizacao);
 	
+	public List<VinculoUsuarioOrganizacao> buscarVinculoPorQualquerCampo(String coluna, String valor);
+	
 	public List<VinculoUsuarioOrganizacao> listarTodosVinculos();
 	
 	public Usuario listarOrganizacoesDoUsuario(Usuario usuario);
 	
-	public void editarPermissaoVinculoUsuarioOrganizacao(int idVinculo, Usuario usuario, Organizacao organizacao, Boolean isAdmin);
+	public void editarPermissaoVinculoUsuarioOrganizacao(VinculoUsuarioOrganizacao vinculo);
 	
-	public void removerVinculoUsuarioOrganizacao(int idVinculo, Usuario usuario, Organizacao organizacao);
+	public void removerVinculoUsuarioOrganizacao(VinculoUsuarioOrganizacao vinculo);
 }

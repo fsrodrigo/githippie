@@ -4,7 +4,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import br.com.oobj.githippie.dao.impl.ManipularUsuarioImpl;
 import br.com.oobj.githippie.model.Organizacao;
 import br.com.oobj.githippie.model.Plano;
 import br.com.oobj.githippie.model.Usuario;
@@ -13,7 +12,6 @@ public class Utils {
 	DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 	private Usuario usuario;
 	private Organizacao organizacao;
-	private ManipularUsuarioImpl usuarioDAO;
 	
 	public Usuario getUserTest() {
 		usuario = new Usuario();

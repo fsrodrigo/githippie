@@ -8,11 +8,19 @@ public class Repositorio {
 	private String nomeRepositorio;
 	private String descricao;
 	private String dataCriacao;
-	private String tipoRepositorio;
+	private TipoRepositorio tipoRepositorio;
 
 	private Usuario usuarioOwner;
 	private List<Usuario> usuariosColaboradores;
 	private List<Tarefa> tarefas;
+ 
+	public TipoRepositorio getTipoRepositorio() {
+		return tipoRepositorio;
+	}
+
+	public void setTipoRepositorio(TipoRepositorio tipoRepositorio) {
+		this.tipoRepositorio = tipoRepositorio;
+	}
 
 	public List<Tarefa> getTarefas() {
 		return tarefas;
@@ -52,23 +60,6 @@ public class Repositorio {
 
 	public void setDataCriacao(String dataCriacao) {
 		this.dataCriacao = dataCriacao;
-	}
-
-	public String getTipoRepositorio() {
-		return tipoRepositorio;
-	}
-
-	public void setTipoRepositorio(int tipoRepostorio) {
-		if (tipoRepostorio == 0) {
-			System.out.println("Agora esse repositório hé Público");
-			this.tipoRepositorio = "Público";
-		}else if (tipoRepostorio == 1) {
-			System.out.println("Agora esse repositório hé Privado");
-			this.tipoRepositorio = "Privado";
-		}else {
-			System.out.println("Valor informado hé invalido, vou retornar null..");
-			this.tipoRepositorio = null;
-		}
 	}
 
 	public Usuario getUsuarioOwner() {
