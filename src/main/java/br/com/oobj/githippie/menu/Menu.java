@@ -1,156 +1,210 @@
 package br.com.oobj.githippie.menu;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public enum Menu {
 
 	USUARIO(1),
+	USUARIO_CADASTRAR(11),
+	USUARIO_CONSULTAR(12),
+	USUARIO_LISTAR(15),
 	ORGANIZACAO(2),
 	REPOSITORIO(3),
 	TAREFA(4),
 	MAIN(9),
-	SAIR(0);
+	MAIN_USUARIO(19),
+	MAIN_ORGANIZACAO(29),
+	MAIN_REPOSITORIO(39),
+	MAIN_TAREFA(49),
+	SAIR(0),
+	SAIR_USUARIO(10),
+	SAIR_ORGANIZACAO(20),
+	SAIR_REPOSITORIO(30),
+	SAIR_TAREFA(40);
 
 	private int menu;
-
+	private static Map<Integer, Menu> map = new HashMap<Integer, Menu>();
+	
+	static {
+		for(Menu menuEnum : Menu.values()) {
+			map.put(menuEnum.menu, menuEnum);
+		}
+	}
+	
 	Menu(final int menu) {
 		this.menu = menu;
 	}
+	
+	public static void setMenu(int index) {
+		map.get(index).getMenu();
+	}
+	
 	public static List<Integer[]> getOptions() {
 		List<Integer[]> menuOptions = new ArrayList<Integer[]>();
 		// index 0 Menu principal
-		Integer[] optionMain = {1,2,3,4,9,0};
+		Integer[] optionMain = { 1, 2, 3, 4, 9, 0 };
 		// index 1 Menu User
-		Integer[] optionUser = {1,2,3,4,5,9,0};
+		Integer[] optionUser = { 1, 2, 3, 4, 5, 6, 9, 0 };
 		// index 2 Menu Organização
-		Integer[] optionOrg = {1,2,3,4,5,9,0};
+		Integer[] optionOrg = { 1, 2, 3, 4, 5, 6, 9, 0 };
 		// index 3 Menu Repositorio
-		Integer[] optionRepo = {1,2,3,4,5,9,0};
+		Integer[] optionRepo = { 1, 2, 3, 4, 5, 6, 9, 0 };
 		// index 4 Menu Tarefa
-		Integer[] optionTarefa = {1,2,3,4,9,0};
-		
-		
+		Integer[] optionTarefa = { 1, 2, 3, 4, 5, 6, 9, 0 };
+
 		menuOptions.add(optionMain);
 		menuOptions.add(optionUser);
 		menuOptions.add(optionOrg);
 		menuOptions.add(optionRepo);
 		menuOptions.add(optionTarefa);
-		
-		
+
 		return menuOptions;
 	}
-	
-	public static void setMenu(int index) {
-		switch (index) {
-		case 1:
-			Menu.USUARIO.getMenu();
-			break;
-		case 2:
-			Menu.ORGANIZACAO.getMenu();
-			break;
-		case 3:
-			Menu.REPOSITORIO.getMenu();
-			break;
-		case 4:
-			Menu.TAREFA.getMenu();
-			break;
-		case 9:
-			Menu.MAIN.getMenu();
-			break;
-		case 0:
-			Menu.SAIR.getMenu();
-			break;
 
-		}
-	}
 
 	public void getMenu() {
 		switch (menu) {
-		case 9:
-			System.out.println("==== Menu Principal ====");
-			getOptionsMainMenu();
-			PrincipalMenu.menu();
-			break;
-		case 1:
-			System.out.println("==== Menu Usuário ====");
-			getOptionsUserMenu();
-			UsuarioMenu.menu();
-			break;
-		case 2:
-			System.out.println("==== Menu Organização ====");
-			getOptionsOrganizacaoMenu();
-			OrganizacaoMenu.menu();
-			break;
-		case 3:
-			System.out.println("==== Menu Repositório ====");
-			getOptionsRepositorioMenu();
-			RepositorioMenu.menu();
-			break;
-		case 4:
-			System.out.println("==== Menu Tarefa ====");
-			getOptionsTarefaMenu();
-			TarefaMenu.menu();
-			break;
+		// Sair do Sistema
 		case 0:
+		case 10:
+		case 20:
+		case 30:
+		case 40:
 			System.out.println("System Down!!!");
 			System.exit(0);
 			break;
-		default:
-			System.out.println("==== Menu Principal ====");
+		// Voltar ao menu Principal
+		case 9:
+		case 19:
+		case 29:
+		case 39:
+		case 49:
+			System.out.println("\n\n==== Menu Principal ====");
 			getOptionsMainMenu();
 			PrincipalMenu.menu();
+			break;
+
+		// ======= MENU PRINCIPAL =======
+
+		// Menu Usuário
+		case 1:
+			System.out.println("\n\n==== Menu Usuário ====");
+			getOptionsUserMenu();
+			UsuarioMenu.menu();
+			break;
+		// Menu Organização
+		case 2:
+			System.out.println("\n\n==== Menu Organização ====");
+			getOptionsOrganizacaoMenu();
+			OrganizacaoMenu.menu();
+			break;
+		// Menu Repositório
+		case 3:
+			System.out.println("\n\n==== Menu Repositório ====");
+			getOptionsRepositorioMenu();
+			RepositorioMenu.menu();
+			break;
+		// Menu Tarefa
+		case 4:
+			System.out.println("\n\n==== Menu Tarefa ====");
+			getOptionsTarefaMenu();
+			TarefaMenu.menu();
+			break;
+
+		// ======= MENU USUÁRIO =======
+
+		// Cadastrar um usuário
+		case 11:
+			System.out.println("\n\n==== Cadastrar um usuário ====");
+			UsuarioMenu.cadastrarUsuario();
+			break;
+		// Buscar por um usuário específico
+		case 12:
+			System.out.println("\n\n==== Buscar por um usuário específico ====");
+			UsuarioMenu.buscarUsuario();
+			break;
+		// Atualizar os dados de um usuário
+		case 13:
+			System.out.println("\n\n==== Atualizar os dados de um usuário ====");
+			getOptionsTarefaMenu();
+			TarefaMenu.menu();
+			break;
+		// Deletar uma usuário
+		case 14:
+			System.out.println("\n\n==== Deletar uma usuário ====");
+			getOptionsTarefaMenu();
+			TarefaMenu.menu();
+			break;
+		// Listar todos as usuários
+		case 15:
+			System.out.println("\n\n==== Listar todos as usuários ====");
+			UsuarioMenu.listarUsuarios();
+			break;
+		// Importar usuários
+		case 16:
+			System.out.println("\n\n==== Importar usuários ====");
+			getOptionsTarefaMenu();
+			TarefaMenu.menu();
+			break;
 		}
 	}
 
 	private void getOptionsMainMenu() {
 		System.out.println("Digite o número referente à opção desejada: ");
-		System.out.println("1 - Menu Usuário");
-		System.out.println("2 - Menu Organização");
-		System.out.println("3 - Menu Repositório");
-		System.out.println("4 - Menu Tarefa");
+		System.out.println("1 - Gerenciar Usuários");
+		System.out.println("2 - Gerenciar Organização");
+		System.out.println("3 - Gerenciar Repositório");
+		System.out.println("4 - Gerenciar Tarefa");
 		System.out.println("0 - SAIR");
 	}
-	
+
 	private void getOptionsUserMenu() {
 		System.out.println("Digite o número referente à opção desejada: ");
-		System.out.println("1 - Novo Usuário");
-		System.out.println("2 - Consultar Usuário");
-		System.out.println("3 - Editar um Usuário");
-		System.out.println("4 - Listar todos Usuários");
-		System.out.println("5 - Desativar um Usuário");
-		System.out.println("9 - Menu Principal");
+		System.out.println("1 - Cadastrar um usuário");
+		System.out.println("2 - Buscar por um usuário específico");
+		System.out.println("3 - Atualizar os dados de um usuário");
+		System.out.println("4 - Deletar uma usuário");
+		System.out.println("5 - Listar todos as usuários");
+		System.out.println("6 - Importar usuários");
+		System.out.println("9 - Voltar ao menu principal");
 		System.out.println("0 - SAIR");
 	}
-	
+
 	private void getOptionsOrganizacaoMenu() {
 		System.out.println("Digite o número referente à opção desejada: ");
-		System.out.println("1 - Nova Organização");
-		System.out.println("2 - Consultar Organização");
-		System.out.println("3 - Editar uma Organização");
-		System.out.println("4 - Listar todas Organizações");
-		System.out.println("5 - Desativar uma Organização");
+		System.out.println("1 - Cadastrar uma organização");
+		System.out.println("2 - Buscar por uma organização específica");
+		System.out.println("3 - Atualizar os dados de uma organização");
+		System.out.println("4 - Deletar uma organização");
+		System.out.println("5 - Listar todas as organizações");
+		System.out.println("6 - Importar organizações");
 		System.out.println("9 - Menu Principal");
 		System.out.println("0 - SAIR");
 	}
-	
+
 	private void getOptionsRepositorioMenu() {
 		System.out.println("Digite o número referente à opção desejada: ");
-		System.out.println("1 - Novo Repositório");
-		System.out.println("2 - Consultar um Repositório");
-		System.out.println("3 - Editar um Repositório");
-		System.out.println("4 - Listar todos Repositório");
-		System.out.println("5 - Desativar um Repositório");
+		System.out.println("1 - Cadastrar um repositório");
+		System.out.println("2 - Buscar por um repositório específico");
+		System.out.println("3 - Atualizar os dados de um repositório");
+		System.out.println("4 - Deletar um repositório");
+		System.out.println("5 - Listar todos os repositórioso");
+		System.out.println("6 - Importar repositórios");
 		System.out.println("9 - Menu Principal");
 		System.out.println("0 - SAIR");
 	}
-	
+
 	private void getOptionsTarefaMenu() {
 		System.out.println("Digite o número referente à opção desejada: ");
-		System.out.println("1 - Nova Tarefa");
-		System.out.println("2 - Consultar Tarefa");
-		System.out.println("3 - Listar Tarefas");
-		System.out.println("4 - Editar Tarefa");
+		System.out.println("1 - Cadastrar um tipo de tarefa");
+		System.out.println("2 - Buscar por um tipo de tarefa específico");
+		System.out.println("3 - Atualizar os dados de um tipo de tarefa");
+		System.out.println("4 - Deletar um tipo de tarefa");
+		System.out.println("5 - Listar todas os tipos de tarefas");
+		System.out.println("6 - Importar tipos de tarefas");
 		System.out.println("9 - Menu Principal");
 		System.out.println("0 - SAIR");
 	}

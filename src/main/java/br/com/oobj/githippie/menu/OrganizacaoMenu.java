@@ -12,6 +12,7 @@ public class OrganizacaoMenu implements IMenu {
 		if (ent.hasNextInt()) {
 			opcaoDigitada = ent.nextInt();
 			if (Arrays.toString(Menu.getOptions().get(2)).contains(opcaoDigitada.toString())) {
+				opcaoDigitada = Integer.parseInt("2".concat(opcaoDigitada.toString()));
 				Menu.setMenu(opcaoDigitada);
 			} else {
 				System.out.println("OPÇÃO INVALIDA.");

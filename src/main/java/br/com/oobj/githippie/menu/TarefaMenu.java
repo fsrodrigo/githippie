@@ -12,6 +12,7 @@ public class TarefaMenu implements IMenu{
 		if (ent.hasNextInt()) {
 			opcaoDigitada = ent.nextInt();
 			if (Arrays.toString(Menu.getOptions().get(4)).contains(opcaoDigitada.toString())) {
+				opcaoDigitada = Integer.parseInt("4".concat(opcaoDigitada.toString()));
 				Menu.setMenu(opcaoDigitada);
 			} else {
 				System.out.println("OPÇÃO INVALIDA.");

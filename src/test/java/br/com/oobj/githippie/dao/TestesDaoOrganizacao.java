@@ -26,7 +26,7 @@ public class TestesDaoOrganizacao {
 
 	@Before
 	public void cadastrarUsuarioOwnerDaOrganizacao() {
-		Usuario usuarioCadastrado = usuarioDAO.cadastrarUsuario(organizacao.getUsuarioOwner());	
+		Usuario usuarioCadastrado = usuarioDAO.cadastrarUsuario(organizacao.getUsuarioOwner());
 		organizacao.setUsuarioOwner(usuarioCadastrado);
 		// usuario.setIdUsuario(UsuarioDAO.consultarPorQualquerColuna("data_cadastro",
 		// usuario.getDataCadastro()).get(0).getIdUsuario());

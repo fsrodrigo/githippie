@@ -17,6 +17,12 @@ public class ManipularUsuarioImpl implements ManipularUsuario {
 	private ConexaoJDBC conexao;
 
 	public Usuario cadastrarUsuario(Usuario usuario) {
+		
+		if(!consultarPorQualquerColuna("email_usuario", usuario.getEmailUsuario()).isEmpty()) {
+			System.out.println("Falha ao cadastrar usuário: Usuário com o e-mail " + usuario.getEmailUsuario() + " já possui cadastro!!!");
+			return null;
+		}
+		
 		String sql = "INSERT INTO usuarios "
 				+ "(nome_usuario, sobre_nome_usuario, email_usuario, url_linkedin, sexo, data_cadastro, plano) "
 				+ "VALUES" + " (?,?,?,?,?,cast (? AS TIMESTAMP),?);";
@@ -33,14 +39,17 @@ public class ManipularUsuarioImpl implements ManipularUsuario {
 			ps.setString(7, String.valueOf(usuario.getPlano()));
 			// Printar query pronta...
 			// System.out.println(ps.toString());
+			
 			int linhasInseridas = ps.executeUpdate();
+			
 			if (linhasInseridas == 1) {
+				System.out.println("Usuário cadastrado com sucesso");
 				ps.getGeneratedKeys().next();
 				usuario.setIdUsuario(ps.getGeneratedKeys().getInt(1));
 			}
 
 		} catch (Exception e) {
-			System.out.println("Falha ao cadastrar um usuário novo..." + e);
+			System.out.println("Falha ao cadastrar usuário: " + e);
 		}
 		return usuario;
 	}

@@ -12,6 +12,7 @@ public class RepositorioMenu implements IMenu{
 		if (ent.hasNextInt()) {
 			opcaoDigitada = ent.nextInt();
 			if (Arrays.toString(Menu.getOptions().get(3)).contains(opcaoDigitada.toString())) {
+				opcaoDigitada = Integer.parseInt("3".concat(opcaoDigitada.toString()));
 				Menu.setMenu(opcaoDigitada);
 			} else {
 				System.out.println("OPÇÃO INVALIDA.");
