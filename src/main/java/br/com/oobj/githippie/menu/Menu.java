@@ -10,6 +10,8 @@ public enum Menu {
 	USUARIO(1),
 	USUARIO_CADASTRAR(11),
 	USUARIO_CONSULTAR(12),
+	USUARIO_EDITAR(13),
+	USUARIO_DELETAR(14),
 	USUARIO_LISTAR(15),
 	ORGANIZACAO(2),
 	REPOSITORIO(3),
@@ -129,14 +131,12 @@ public enum Menu {
 		// Atualizar os dados de um usuário
 		case 13:
 			System.out.println("\n\n==== Atualizar os dados de um usuário ====");
-			getOptionsTarefaMenu();
-			TarefaMenu.menu();
+			UsuarioMenu.editarUsuario();
 			break;
 		// Deletar uma usuário
 		case 14:
 			System.out.println("\n\n==== Deletar uma usuário ====");
-			getOptionsTarefaMenu();
-			TarefaMenu.menu();
+			UsuarioMenu.deletarUsuario();
 			break;
 		// Listar todos as usuários
 		case 15:

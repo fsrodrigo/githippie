@@ -17,12 +17,13 @@ public class ManipularUsuarioImpl implements ManipularUsuario {
 	private ConexaoJDBC conexao;
 
 	public Usuario cadastrarUsuario(Usuario usuario) {
-		
-		if(!consultarPorQualquerColuna("email_usuario", usuario.getEmailUsuario()).isEmpty()) {
-			System.out.println("Falha ao cadastrar usuário: Usuário com o e-mail " + usuario.getEmailUsuario() + " já possui cadastro!!!");
+
+		if (!consultarPorQualquerColuna("email_usuario", usuario.getEmailUsuario()).isEmpty()) {
+			System.out.println("Falha ao cadastrar usuário: Usuário com o e-mail " + usuario.getEmailUsuario()
+					+ " já possui cadastro!!!");
 			return null;
 		}
-		
+
 		String sql = "INSERT INTO usuarios "
 				+ "(nome_usuario, sobre_nome_usuario, email_usuario, url_linkedin, sexo, data_cadastro, plano) "
 				+ "VALUES" + " (?,?,?,?,?,cast (? AS TIMESTAMP),?);";
@@ -39,9 +40,9 @@ public class ManipularUsuarioImpl implements ManipularUsuario {
 			ps.setString(7, String.valueOf(usuario.getPlano()));
 			// Printar query pronta...
 			// System.out.println(ps.toString());
-			
+
 			int linhasInseridas = ps.executeUpdate();
-			
+
 			if (linhasInseridas == 1) {
 				System.out.println("Usuário cadastrado com sucesso");
 				ps.getGeneratedKeys().next();
@@ -55,6 +56,7 @@ public class ManipularUsuarioImpl implements ManipularUsuario {
 	}
 
 	public void editarUsuario(Usuario usuario) {
+
 		String sql = "UPDATE usuarios SET nome_usuario = ?, sobre_nome_usuario = ?, email_usuario = ?, url_linkedin = ?, "
 				+ "sexo = ?, plano = ? WHERE id = ?;";
 
@@ -69,12 +71,23 @@ public class ManipularUsuarioImpl implements ManipularUsuario {
 			ps.setString(6, String.valueOf(usuario.getPlano()));
 			ps.setInt(7, usuario.getIdUsuario());
 
-			// System.out.println(ps.toString());
-			ps.executeUpdate();
+			// Usuario usuarioValidarRepetido = consultarPorQualquerColuna("email_usuario",
+			// usuario.getEmailUsuario());
+			List<Usuario> validarUsuarioRepetido = consultarPorQualquerColuna("email_usuario",
+					usuario.getEmailUsuario());
+			if (validarUsuarioRepetido.size() == 1
+					&& validarUsuarioRepetido.get(0).getIdUsuario() != usuario.getIdUsuario()) {
+				System.out.println("Falha ao Editar, usuário com o e-mail " + usuario.getEmailUsuario()
+						+ " já possui cadastro!!!");
+			} else {
+				ps.executeUpdate();
+				System.out.println("Usuário editado com sucesso");
+			}
 
 		} catch (Exception e) {
-			System.out.println("Falha ao editar o usuário ..." + e);
+			System.out.println("Falha ao editar o usuário: " + e);
 		}
+
 	}
 
 	public void desativarusuario(Usuario usuario) {
@@ -85,15 +98,14 @@ public class ManipularUsuarioImpl implements ManipularUsuario {
 			PreparedStatement ps = conexao.getConnection().prepareStatement(sql);
 			ps.setInt(1, usuario.getIdUsuario());
 			ps.executeUpdate();
-
+			System.out.println("Usuário deletado com sucesso!");
 		} catch (Exception e) {
-			System.out.println("Falha desativar o usuário: " + usuario.getNomeUsuario());
-			System.out.println(e);
+			System.out.println("Falha desativar o usuário: " + e);
 		}
 	}
 
 	public Usuario consultarPorId(int id) {
-		String sql = "SELECT * FROM usuarios where id= " + id + ";";
+		String sql = "SELECT * FROM usuarios where id= " + id + " AND ativo = TRUE;";
 
 		try {
 			conexao = new ConexaoJDBC();
@@ -122,7 +134,7 @@ public class ManipularUsuarioImpl implements ManipularUsuario {
 	}
 
 	public List<Usuario> listarTodos() {
-		String sql = "SELECT * FROM usuarios;";
+		String sql = "SELECT * FROM usuarios WHERE ativo = TRUE;";
 		List<Usuario> usuarios = new ArrayList<Usuario>();
 
 		try {
@@ -152,7 +164,7 @@ public class ManipularUsuarioImpl implements ManipularUsuario {
 	}
 
 	public List<Usuario> consultarPorQualquerColuna(String coluna, String valor) {
-		String sql = "SELECT * FROM usuarios WHERE " + coluna + " = \'" + valor + "\';";
+		String sql = "SELECT * FROM usuarios WHERE " + coluna + " = \'" + valor + "\' AND ativo = TRUE;";
 		List<Usuario> usuarios = new ArrayList<Usuario>();
 
 		try {
