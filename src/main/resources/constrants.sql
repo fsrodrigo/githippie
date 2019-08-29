@@ -1,3 +1,24 @@
+CREATE SEQUENCE public.organizacoes_id_seq;
+ALTER TABLE public.organizacoes_id_seq
+  OWNER TO postgres;
+  
+  CREATE SEQUENCE public.repositorios_id_seq;
+ALTER TABLE public.repositorios_id_seq
+  OWNER TO postgres;
+
+CREATE SEQUENCE public.usuario_id_seq;
+ALTER TABLE public.usuario_id_seq
+  OWNER TO postgres;
+  
+  CREATE SEQUENCE public.usuarios_organizacao_id_seq;
+ALTER TABLE public.usuarios_organizacao_id_seq
+  OWNER TO postgres;
+  
+CREATE SEQUENCE public.usuarios_repositorios_id_seq;
+ALTER TABLE public.usuarios_repositorios_id_seq
+  OWNER TO postgres;
+
+  
 CREATE TABLE public.usuarios
 (
   id bigint NOT NULL DEFAULT nextval('usuario_id_seq'::regclass),

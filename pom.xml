@@ -5,7 +5,11 @@
 	<groupId>br.com.oobj</groupId>
 	<artifactId>githippie</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-
+	<properties>
+		<javaVersion>1.8</javaVersion>
+		<maven.compiler.source>${java.version}</maven.compiler.source>
+		<maven.compiler.target>${java.version}</maven.compiler.target>
+	</properties>
 
 	<dependencies>
 
@@ -27,6 +31,6 @@
 			<artifactId>postgresql</artifactId>
 			<version>9.1-901-1.jdbc4</version>
 		</dependency>
-		
+
 	</dependencies>
 </project>
