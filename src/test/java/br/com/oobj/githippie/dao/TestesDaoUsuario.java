@@ -87,7 +87,7 @@ public class TestesDaoUsuario {
 
 		System.out.println("Vou Desativar o usuário: " + usuario.getNomeUsuario() + " ID: " + usuario.getIdUsuario());
 
-		usuarioDAO.desativarusuario(usuario);
+		usuarioDAO.desativarUsuario(usuario);
 		int qtdCadastros = usuarioDAO.consultarPorQualquerColuna("ativo", "false").size();
 		int qtdCadastrosEsperado = 1;
 		assertEquals(qtdCadastrosEsperado, qtdCadastros);

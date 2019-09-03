@@ -90,7 +90,7 @@ public class ManipularUsuarioImpl implements ManipularUsuario {
 
 	}
 
-	public void desativarusuario(Usuario usuario) {
+	public void desativarUsuario(Usuario usuario) {
 		String sql = "UPDATE usuarios SET ativo = FALSE WHERE id = ?;";
 
 		try {
@@ -105,7 +105,7 @@ public class ManipularUsuarioImpl implements ManipularUsuario {
 	}
 
 	public Usuario consultarPorId(int id) {
-		String sql = "SELECT * FROM usuarios where id= " + id + " AND ativo = TRUE;";
+		String sql = "SELECT * FROM usuarios WHERE id= " + id + " AND ativo = TRUE;";
 
 		try {
 			conexao = new ConexaoJDBC();
@@ -164,7 +164,7 @@ public class ManipularUsuarioImpl implements ManipularUsuario {
 	}
 
 	public List<Usuario> consultarPorQualquerColuna(String coluna, String valor) {
-		String sql = "SELECT * FROM usuarios WHERE " + coluna + " = \'" + valor + "\' AND ativo = TRUE;";
+		String sql = "SELECT * FROM usuarios WHERE LOWER(" + coluna + ") = LOWER(\'" + valor + "\') AND ativo = TRUE;";
 		List<Usuario> usuarios = new ArrayList<Usuario>();
 
 		try {

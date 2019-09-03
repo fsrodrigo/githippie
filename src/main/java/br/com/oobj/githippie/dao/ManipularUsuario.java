@@ -10,7 +10,7 @@ public interface ManipularUsuario {
 	
 	public void editarUsuario(Usuario usuario);
 	
-	public void desativarusuario(Usuario usuario);
+	public void desativarUsuario(Usuario usuario);
 	
 	public Usuario consultarPorId(int id);
 	

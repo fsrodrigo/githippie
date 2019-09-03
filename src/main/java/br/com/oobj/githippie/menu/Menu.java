@@ -13,8 +13,10 @@ public enum Menu {
 	USUARIO_EDITAR(13),
 	USUARIO_DELETAR(14),
 	USUARIO_LISTAR(15),
+	USUARIO_IMPORTAR(16),
 	ORGANIZACAO(2),
 	REPOSITORIO(3),
+	REPOSITORIO_CADASTRAR(31),
 	TAREFA(4),
 	MAIN(9),
 	MAIN_USUARIO(19),
@@ -103,12 +105,18 @@ public enum Menu {
 			getOptionsOrganizacaoMenu();
 			OrganizacaoMenu.menu();
 			break;
-		// Menu Repositório
+		//======= Menu Repositório =======
 		case 3:
 			System.out.println("\n\n==== Menu Repositório ====");
 			getOptionsRepositorioMenu();
 			RepositorioMenu.menu();
 			break;
+		// Cadastrar um repositório
+		case 31:
+			System.out.println("\n\n==== Cadastro de Repositório ====");
+			RepositorioMenu.cadastrarRepositorio();
+			break;
+			
 		// Menu Tarefa
 		case 4:
 			System.out.println("\n\n==== Menu Tarefa ====");
@@ -120,7 +128,7 @@ public enum Menu {
 
 		// Cadastrar um usuário
 		case 11:
-			System.out.println("\n\n==== Cadastrar um usuário ====");
+			System.out.println("\n\n==== Cadastro de usuário ====");
 			UsuarioMenu.cadastrarUsuario();
 			break;
 		// Buscar por um usuário específico

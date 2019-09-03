@@ -11,6 +11,7 @@ import java.util.Scanner;
 import br.com.oobj.githippie.dao.impl.ManipularUsuarioImpl;
 import br.com.oobj.githippie.model.Plano;
 import br.com.oobj.githippie.model.Usuario;
+import br.com.oobj.githippie.util.Utils;
 
 public class UsuarioMenu implements IMenu {
 
@@ -35,115 +36,88 @@ public class UsuarioMenu implements IMenu {
 		}
 	}
 
+	// Menu 1-1
 	public static void cadastrarUsuario() {
 		Scanner ent = new Scanner(System.in);
 		Usuario usuarioNovo = new Usuario();
 		Date date = new Date();
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		String valorDigitado;
 
 		System.out.println("Digite o Nome do Usuário: ");
-		usuarioNovo.setNomeUsuario(ent.nextLine());
+		valorDigitado = ent.nextLine();
+		if (valorDigitado.trim().equals("")) {
+			usuarioNovo.setNomeUsuario(Utils.validarCampoObrigatorio());
+		} else
+			usuarioNovo.setNomeUsuario(valorDigitado);
 
 		System.out.println("Digite o Sobrenome do Usuário: ");
-		usuarioNovo.setSobreNomeUsuario(ent.nextLine());
+		valorDigitado = ent.nextLine();
+		if (valorDigitado.trim().equals("")) {
+			usuarioNovo.setSobreNomeUsuario(Utils.validarCampoObrigatorio());
+		} else
+			usuarioNovo.setSobreNomeUsuario(valorDigitado);
 
 		System.out.println("Digite o Email do usuário: ");
-		usuarioNovo.setEmailUsuario(ent.nextLine());
+		valorDigitado = ent.nextLine();
+		if (valorDigitado.trim().equals("")) {
+			usuarioNovo.setEmailUsuario(Utils.validarCampoObrigatorio());
+		} else
+			usuarioNovo.setEmailUsuario(valorDigitado);
 
 		System.out.println("Digite o Sexo do Usuário: \nM - Masculino \nF - Feminino ");
-		Boolean flag = false;
-		String sexo;
-		String[] valoresAceitosSexo = { "M", "F" };
-		while (!flag) {
-			sexo = ent.nextLine().toUpperCase();
-			if (!(Arrays.asList(valoresAceitosSexo).contains(sexo))) {
-				System.out.println("O Valor digitado está incorreto (" + sexo
-						+ ") Digite apenas uma das iniciais de: \nM - Masculino \nF - Feminino ");
-			} else {
-				usuarioNovo.setSexo(sexo.charAt(0));
-				flag = true;
-			}
-		}
+		usuarioNovo.setSexo(escolherSexoDigitado(""));
+
 		System.out.println("Digite a URL do Linkedin: ");
 		usuarioNovo.setUrlLinkedin(ent.nextLine());
+
 		System.out.println("Digite o Plano desejado para esse usuário: \nF - FREE \nP - PRO \nE - ENTERPRISE ");
-		flag = false;
-		String plano;
-		String[] valoresAceitosPlano = { "F", "P", "E" };
-		while (!flag) {
-			plano = ent.nextLine().toUpperCase();
-			if (!(Arrays.asList(valoresAceitosPlano).contains(plano))) {
-				System.out.println("O Valor digitado está incorreto (" + plano
-						+ ") Digite apenas uma das iniciais de: \nF - FREE \nP - PRO \nE - ENTERPRISE ");
-			} else {
-				usuarioNovo.setPlano(Plano.obterPlano(plano));
-				flag = true;
-			}
-		}
+		usuarioNovo.setPlano(escolherPlanoDigitado(""));
+
 		usuarioNovo.setDataCadastro(dateFormat.format(date).toString());
 		usuarioDAO.cadastrarUsuario(usuarioNovo);
 		Menu.USUARIO.getMenu();
 	}
 
+	// Menu 1-2
 	public static void buscarUsuario() {
 		Scanner ent = new Scanner(System.in);
 
 		System.out.println("Digite o Nome ou Email do usuário que deseja localizar: ");
 		String valorAConsultar = ent.nextLine();
 
-		int[] usuariosLocalizado = buscarPorEmail(valorAConsultar);
+		int[] usuariosLocalizado = Utils.buscarPorEmail(valorAConsultar);
 		if (usuariosLocalizado.length > 0) {
 			Menu.USUARIO.getMenu();
 		}
-		usuariosLocalizado = buscarPorNome(valorAConsultar);
+		usuariosLocalizado = Utils.buscarPorNome(valorAConsultar);
 		if (usuariosLocalizado.length == 0) {
 			System.out.println("Nenhum usuário localizado com os dados informados.");
 		}
 		Menu.USUARIO.getMenu();
 	}
 
+	// Menu 1-3
 	public static void editarUsuario() {
 		Scanner ent = new Scanner(System.in);
 
 		System.out.println("Digite o Nome ou Email do usuário que deseja editar: ");
 		String valorAConsultar = ent.nextLine();
 
-		int[] usuariosLocalizado = buscarPorEmail(valorAConsultar);
+		int[] usuariosLocalizado = Utils.buscarPorEmail(valorAConsultar);
 		if (usuariosLocalizado.length == 1) {
 			System.out.println("Confirmar a edição desse usuário? \nS - Sim \nN - Não");
-			Boolean flag = false;
-			String[] valoresAceitos = { "S", "N" };
-			while (!flag) {
-				String valorConfirmar = ent.nextLine().toUpperCase();
-				if (!(Arrays.asList(valoresAceitos).contains(valorConfirmar))) {
-					System.out.println("O Valor digitado está incorreto (" + valorConfirmar
-							+ ") Digite apenas um dos valores abaixo: \nS - Sim \nN - Não");
-				} else if (valorConfirmar.equals("N")) {
-					Menu.USUARIO.getMenu();
-				} else {
-					Usuario usuarioEditado = editorUsuario(usuariosLocalizado[0]);
-					flag = true;
-				}
+			if (confirmarOperacoesSimNao()) {
+				Usuario usuarioEditado = editorUsuario(usuariosLocalizado[0]);
 			}
 			Menu.USUARIO.getMenu();
 		}
 
-		usuariosLocalizado = buscarPorNome(valorAConsultar);
+		usuariosLocalizado = Utils.buscarPorNome(valorAConsultar);
 		if (usuariosLocalizado.length == 1) {
 			System.out.println("Confirmar a edição desse usuário? \nS - Sim \nN - Não");
-			Boolean flag = false;
-			String[] valoresAceitos = { "S", "N" };
-			while (!flag) {
-				String valorConfirmar = ent.nextLine().toUpperCase();
-				if (!(Arrays.asList(valoresAceitos).contains(valorConfirmar))) {
-					System.out.println("O Valor digitado está incorreto (" + valorConfirmar
-							+ ") Digite apenas um dos valores abaixo: \nS - Sim \nN - Não");
-				} else if (valorConfirmar.equals("N")) {
-					Menu.USUARIO.getMenu();
-				} else {
-					Usuario usuarioEditado = editorUsuario(usuariosLocalizado[0]);
-					flag = true;
-				}
+			if (confirmarOperacoesSimNao()) {
+				Usuario usuarioEditado = editorUsuario(usuariosLocalizado[0]);
 			}
 		} else if (usuariosLocalizado.length > 1) {
 			String valoresAceitos[] = new String[usuariosLocalizado.length];
@@ -169,47 +143,26 @@ public class UsuarioMenu implements IMenu {
 		Menu.USUARIO.getMenu();
 	}
 
+	// Menu 1-4
 	public static void deletarUsuario() {
 		Scanner ent = new Scanner(System.in);
 
 		System.out.println("Digite o Nome ou Email do usuário que deseja deletar: ");
 		String valorAConsultar = ent.nextLine();
 
-		int[] usuariosLocalizado = buscarPorEmail(valorAConsultar);
+		int[] usuariosLocalizado = Utils.buscarPorEmail(valorAConsultar);
 		if (usuariosLocalizado.length == 1) {
 			System.out.println("Confirmar a exclusão desse usuário? \nS - Sim \nN - Não");
-			Boolean flag = false;
-			String[] valoresAceitos = { "S", "N" };
-			while (!flag) {
-				String valorConfirmar = ent.nextLine().toUpperCase();
-				if (!(Arrays.asList(valoresAceitos).contains(valorConfirmar))) {
-					System.out.println("O Valor digitado está incorreto (" + valorConfirmar
-							+ ") Digite apenas um dos valores abaixo: \nS - Sim \nN - Não");
-				} else if (valorConfirmar.equals("N")) {
-					Menu.USUARIO.getMenu();
-				} else {
-					usuarioDAO.desativarusuario(usuarioDAO.consultarPorId(usuariosLocalizado[0]));
-					flag = true;
-				}
+			if (confirmarOperacoesSimNao()) {
+				usuarioDAO.desativarUsuario(usuarioDAO.consultarPorId(usuariosLocalizado[0]));
 			}
 			Menu.USUARIO.getMenu();
 		}
-		usuariosLocalizado = buscarPorNome(valorAConsultar);
+		usuariosLocalizado = Utils.buscarPorNome(valorAConsultar);
 		if (usuariosLocalizado.length == 1) {
 			System.out.println("Confirmar a exclusão desse usuário? \nS - Sim \nN - Não");
-			Boolean flag = false;
-			String[] valoresAceitos = { "S", "N" };
-			while (!flag) {
-				String valorConfirmar = ent.nextLine().toUpperCase();
-				if (!(Arrays.asList(valoresAceitos).contains(valorConfirmar))) {
-					System.out.println("O Valor digitado está incorreto (" + valorConfirmar
-							+ ") Digite apenas um dos valores abaixo: \nS - Sim \nN - Não");
-				} else if (valorConfirmar.equals("N")) {
-					Menu.USUARIO.getMenu();
-				} else {
-					usuarioDAO.desativarusuario(usuarioDAO.consultarPorId(usuariosLocalizado[0]));
-					flag = true;
-				}
+			if (confirmarOperacoesSimNao()) {
+				usuarioDAO.desativarUsuario(usuarioDAO.consultarPorId(usuariosLocalizado[0]));
 			}
 		} else if (usuariosLocalizado.length > 1) {
 			String valoresAceitos[] = new String[usuariosLocalizado.length];
@@ -227,19 +180,8 @@ public class UsuarioMenu implements IMenu {
 				} else {
 					buscarPorID(Integer.parseInt(idDeletar));
 					System.out.println("Confirmar a exclusão desse usuário? \nS - Sim \nN - Não");
-					flag = false;
-					String[] confirmarDelete = { "S", "N" };
-					while (!flag) {
-						String valorConfirmar = ent.nextLine().toUpperCase();
-						if (!(Arrays.asList(confirmarDelete).contains(valorConfirmar))) {
-							System.out.println("O Valor digitado está incorreto (" + valorConfirmar
-									+ ") Digite apenas um dos valores abaixo: \nS - Sim \nN - Não");
-						} else if (valorConfirmar.equals("N")) {
-							Menu.USUARIO.getMenu();
-						} else {
-							usuarioDAO.desativarusuario(usuarioDAO.consultarPorId(usuariosLocalizado[0]));
-							flag = true;
-						}
+					if (confirmarOperacoesSimNao()) {
+						usuarioDAO.desativarUsuario(usuarioDAO.consultarPorId(usuariosLocalizado[0]));
 					}
 				}
 			}
@@ -249,79 +191,12 @@ public class UsuarioMenu implements IMenu {
 		Menu.USUARIO.getMenu();
 	}
 
+	// Menu 1-5
 	public static void listarUsuarios() {
 		List<Usuario> usuarios = usuarioDAO.listarTodos();
 		System.out.println("Usuários cadastrados Localizados: " + usuarios.size());
 
 		for (Usuario usuario : usuarios) {
-			System.out.println("ID: " + usuario.getIdUsuario() + "\nNome Usuário: " + usuario.getNomeUsuario()
-					+ "\nEmail Usuário: " + usuario.getEmailUsuario() + "\n\n");
-		}
-		Menu.USUARIO.getMenu();
-	}
-
-	private static Usuario editorUsuario(int idUsuario) {
-		Scanner ent = new Scanner(System.in);
-		Usuario usuarioEditar = usuarioDAO.consultarPorId(idUsuario);
-
-		System.out.println("Nome atual do usuário: " + usuarioEditar.getNomeUsuario() + " Digite o novo nome: ");
-		usuarioEditar.setNomeUsuario(ent.nextLine());
-
-		System.out.println(
-				"Sobre Nome atual do usuário: " + usuarioEditar.getSobreNomeUsuario() + " Digite o novo Sobre Nome: ");
-		usuarioEditar.setSobreNomeUsuario(ent.nextLine());
-
-		System.out.println("Email atual do usuário: " + usuarioEditar.getEmailUsuario() + " Digite o novo Email: ");
-		usuarioEditar.setEmailUsuario(ent.nextLine());
-
-		System.out.println(
-				"URL Linkedin atual do usuário: " + usuarioEditar.getUrlLinkedin() + " Digite a nova URL Linkedin: ");
-		usuarioEditar.setUrlLinkedin(ent.nextLine());
-
-		System.out.println("Sexo atual do usuário: " + usuarioEditar.getSexo() + " Digite o novo Sexo: ");
-		usuarioEditar.setSexo(ent.nextLine().charAt(0));
-
-		System.out.println("Plano atual do usuário: " + usuarioEditar.getPlano().name() + " Digite o novo Plano: ");
-		usuarioEditar.setPlano(Plano.ENTERPRISE);
-
-		usuarioDAO.editarUsuario(usuarioEditar);
-
-		return usuarioEditar;
-	}
-
-	private static int[] buscarPorEmail(String email) {
-		List<Usuario> usuarioEncontrado;
-		usuarioEncontrado = usuarioDAO.consultarPorQualquerColuna("email_usuario", email);
-		int[] ids = new int[usuarioEncontrado.size()];
-
-		if (usuarioEncontrado.size() == 1) {
-			System.out.println("Usuário(s) Encontrado(s): " + usuarioEncontrado.size());
-			System.out.println("------------------------------------------------------------------------------");
-			System.out.println("ID usuário: " + usuarioEncontrado.get(0).getIdUsuario());
-			System.out.println("Nome usuário: " + usuarioEncontrado.get(0).getNomeUsuario() + " "
-					+ usuarioEncontrado.get(0).getSobreNomeUsuario());
-			System.out.println("Email usuário: " + usuarioEncontrado.get(0).getEmailUsuario());
-			System.out.println("Sexo usuário: " + usuarioEncontrado.get(0).getSexo());
-			System.out.println("URL Linkedin usuário: " + usuarioEncontrado.get(0).getUrlLinkedin());
-			System.out.println("Plano usuário: " + usuarioEncontrado.get(0).getPlano().name());
-			System.out.println("Data de cadastro usuário: " + usuarioEncontrado.get(0).getDataCadastro());
-			System.out.println("------------------------------------------------------------------------------");
-			ids[0] = usuarioEncontrado.get(0).getIdUsuario();
-		}
-		return ids;
-	}
-
-	private static int[] buscarPorNome(String nome) {
-		List<Usuario> usuarioEncontrado;
-
-		usuarioEncontrado = usuarioDAO.consultarPorQualquerColuna("nome_usuario", nome);
-		int[] ids = new int[usuarioEncontrado.size()];
-		if (usuarioEncontrado.size() == 0) {
-			return ids;
-		}
-		System.out.println("Usuário(s) Encontrado(s): " + usuarioEncontrado.size());
-		int x = 0;
-		for (Usuario usuario : usuarioEncontrado) {
 			System.out.println("------------------------------------------------------------------------------");
 			System.out.println("ID usuário: " + usuario.getIdUsuario());
 			System.out.println("Nome usuário: " + usuario.getNomeUsuario() + " " + usuario.getSobreNomeUsuario());
@@ -331,10 +206,124 @@ public class UsuarioMenu implements IMenu {
 			System.out.println("Plano usuário: " + usuario.getPlano().name());
 			System.out.println("Data de cadastro usuário: " + usuario.getDataCadastro());
 			System.out.println("------------------------------------------------------------------------------");
-			ids[x] = usuario.getIdUsuario();
-			x++;
 		}
-		return ids;
+		Menu.USUARIO.getMenu();
+	}
+
+	private static Usuario editorUsuario(int idUsuario) {
+		Scanner ent = new Scanner(System.in);
+		Usuario usuarioEditar = usuarioDAO.consultarPorId(idUsuario);
+		String valorDigitado;
+
+		System.out.println("Nome atual do usuário: " + usuarioEditar.getNomeUsuario()
+				+ " Digite o novo nome ou Enter para manter o atual: ");
+		valorDigitado = ent.nextLine();
+		if (!valorDigitado.equals("")) {
+			usuarioEditar.setNomeUsuario(valorDigitado);
+		}
+
+		System.out.println("Sobre Nome atual do usuário: " + usuarioEditar.getSobreNomeUsuario()
+				+ " Digite o novo Sobre Nome ou Enter para manter o atual: ");
+		valorDigitado = ent.nextLine();
+		if (!valorDigitado.equals("")) {
+			usuarioEditar.setSobreNomeUsuario(valorDigitado);
+		}
+
+		System.out.println("Email atual do usuário: " + usuarioEditar.getEmailUsuario()
+				+ " Digite o novo Email ou Enter para manter o atual: ");
+		valorDigitado = ent.nextLine();
+		if (!valorDigitado.equals("")) {
+			usuarioEditar.setEmailUsuario(valorDigitado);
+		}
+
+		System.out.println("URL Linkedin atual do usuário: " + usuarioEditar.getUrlLinkedin()
+				+ " Digite a nova URL Linkedin ou Enter para manter o atual: ");
+		valorDigitado = ent.nextLine();
+		if (!valorDigitado.equals("")) {
+			usuarioEditar.setUrlLinkedin(valorDigitado);
+		}
+
+		System.out.println("Sexo atual do usuário: " + usuarioEditar.getSexo()
+				+ " Digite a inicial do novo sexo: \nM - Masculino \nF - Feminino \nOu Enter para manter o atual: ");
+		valorDigitado = ent.nextLine();
+		if (!valorDigitado.equals("")) {
+			usuarioEditar.setSexo(escolherSexoDigitado(valorDigitado));
+		}
+
+		System.out.println("Plano atual do usuário: " + usuarioEditar.getPlano().name()
+				+ " Digite o novo Plano ou Enter para manter o atual F - FREE ou P - PRO ou E - ENTERPRISE : ");
+		valorDigitado = ent.nextLine();
+		if (!valorDigitado.equals("")) {
+			usuarioEditar.setPlano(escolherPlanoDigitado(valorDigitado));
+		}
+
+		usuarioDAO.editarUsuario(usuarioEditar);
+
+		return usuarioEditar;
+	}
+
+	private static Plano escolherPlanoDigitado(String valorInicial) {
+		Scanner ent = new Scanner(System.in);
+		Boolean flag = false;
+		String plano = valorInicial.toUpperCase();
+		String[] valoresAceitosPlano = { "F", "P", "E" };
+		if (plano.trim().equals("")) {
+			while (!flag) {
+				plano = ent.nextLine().toUpperCase();
+				if (!(Arrays.asList(valoresAceitosPlano).contains(plano))) {
+					System.out.println("O Valor digitado está incorreto (" + plano
+							+ ") Digite apenas uma das iniciais de: \nF - FREE \nP - PRO \nE - ENTERPRISE ");
+				} else {
+					flag = true;
+				}
+			}
+		} else if (!(Arrays.asList(valoresAceitosPlano).contains(plano))) {
+			System.out.println("O Valor digitado está incorreto (" + plano
+					+ ") Digite apenas uma das iniciais de: \nF - FREE \nP - PRO \nE - ENTERPRISE ");
+			plano = escolherPlanoDigitado("").getPlano();
+		}
+		return Plano.obterPlano(plano);
+	}
+
+	private static Character escolherSexoDigitado(String valorInicial) {
+		Scanner ent = new Scanner(System.in);
+		Boolean flag = false;
+		String sexo = valorInicial.toUpperCase();
+		String[] valoresAceitosSexo = { "M", "F" };
+		if (sexo.trim().equals("")) {
+			while (!flag) {
+				sexo = ent.nextLine().toUpperCase();
+				if (!(Arrays.asList(valoresAceitosSexo).contains(sexo))) {
+					System.out.println("O Valor digitado está incorreto (" + sexo
+							+ ") Digite apenas uma das iniciais de: \nM - Masculino \nF - Feminino ");
+				} else {
+					flag = true;
+				}
+			}
+		} else if (!(Arrays.asList(valoresAceitosSexo).contains(sexo))) {
+			System.out.println("O Valor digitado está incorreto (" + sexo
+					+ ") Digite apenas uma das iniciais de: \nM - Masculino \nF - Feminino ");
+			sexo = escolherSexoDigitado("").toString();
+		}
+		return sexo.charAt(0);
+	}
+
+	private static Boolean confirmarOperacoesSimNao() {
+		Scanner ent = new Scanner(System.in);
+		Boolean flag = false;
+		String[] confirmarDelete = { "S", "N" };
+		while (!flag) {
+			String valorConfirmar = ent.nextLine().toUpperCase();
+			if (!(Arrays.asList(confirmarDelete).contains(valorConfirmar))) {
+				System.out.println("O Valor digitado está incorreto (" + valorConfirmar
+						+ ") Digite apenas um dos valores abaixo: \nS - Sim \nN - Não");
+			} else if (valorConfirmar.equals("N")) {
+				Menu.USUARIO.getMenu();
+			} else {
+				flag = true;
+			}
+		}
+		return true;
 	}
 
 	private static int[] buscarPorID(int idUsuario) {

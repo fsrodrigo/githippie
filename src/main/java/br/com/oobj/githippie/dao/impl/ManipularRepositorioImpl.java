@@ -33,12 +33,13 @@ public class ManipularRepositorioImpl implements ManipularRepositorio {
 
 			int linhasInseridas = ps.executeUpdate();
 			if (linhasInseridas == 1) {
+				System.out.println("Repositório cadastrado com sucesso.");
 				ps.getGeneratedKeys().next();
 				repositorio.setIdRepositorio(ps.getGeneratedKeys().getInt(1));
 			}
 
 		} catch (Exception e) {
-			System.out.println("Falha ao cadastrar um REPOSITÓRIO novo..." + e);
+			System.out.println("Falha ao cadastrar repositório: " + e);
 		}
 		return repositorio;
 	}
