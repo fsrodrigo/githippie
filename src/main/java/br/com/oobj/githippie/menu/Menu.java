@@ -17,16 +17,22 @@ public enum Menu {
 	ORGANIZACAO(2),
 	REPOSITORIO(3),
 	REPOSITORIO_CADASTRAR(31),
+	REPOSITORIO_CONSULTAR(32),
+	REPOSITORIO_EDITAR(33),
+	REPOSITORIO_EDITAR_MENU(338),
+	REPOSITORIO_DELETAR(34),
 	TAREFA(4),
 	MAIN(9),
 	MAIN_USUARIO(19),
 	MAIN_ORGANIZACAO(29),
 	MAIN_REPOSITORIO(39),
+	MAIN_REPOSITORIO_EDITAR(339),
 	MAIN_TAREFA(49),
 	SAIR(0),
 	SAIR_USUARIO(10),
 	SAIR_ORGANIZACAO(20),
 	SAIR_REPOSITORIO(30),
+	SAIR_REPOSITORIO_EDITAR(330),
 	SAIR_TAREFA(40);
 
 	private int menu;
@@ -56,13 +62,16 @@ public enum Menu {
 		Integer[] optionOrg = { 1, 2, 3, 4, 5, 6, 9, 0 };
 		// index 3 Menu Repositorio
 		Integer[] optionRepo = { 1, 2, 3, 4, 5, 6, 9, 0 };
-		// index 4 Menu Tarefa
+		// index 4 Menu Repositorio
+		Integer[] optionEditarRepo = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 0 };
+		// index 5 Menu Tarefa
 		Integer[] optionTarefa = { 1, 2, 3, 4, 5, 6, 9, 0 };
 
 		menuOptions.add(optionMain);
 		menuOptions.add(optionUser);
 		menuOptions.add(optionOrg);
 		menuOptions.add(optionRepo);
+		menuOptions.add(optionEditarRepo);
 		menuOptions.add(optionTarefa);
 
 		return menuOptions;
@@ -76,6 +85,7 @@ public enum Menu {
 		case 10:
 		case 20:
 		case 30:
+		case 330:
 		case 40:
 			System.out.println("System Down!!!");
 			System.exit(0);
@@ -85,6 +95,7 @@ public enum Menu {
 		case 19:
 		case 29:
 		case 39:
+		case 339:
 		case 49:
 			System.out.println("\n\n==== Menu Principal ====");
 			getOptionsMainMenu();
@@ -105,6 +116,7 @@ public enum Menu {
 			getOptionsOrganizacaoMenu();
 			OrganizacaoMenu.menu();
 			break;
+			
 		//======= Menu Repositório =======
 		case 3:
 			System.out.println("\n\n==== Menu Repositório ====");
@@ -116,7 +128,25 @@ public enum Menu {
 			System.out.println("\n\n==== Cadastro de Repositório ====");
 			RepositorioMenu.cadastrarRepositorio();
 			break;
+		// Consultar um repositório
+		case 32:
+			System.out.println("\n\n==== Consultar Repositório ====");
+			RepositorioMenu.consultarRepositorio();
+			break;		
+		// Consultar um repositório
+		case 33:
+		case 338:
+			System.out.println("\n\n==== Menu Editar Repositório ====");
+			getOptionsEditarRepositorioMenu();
+			RepositorioMenu.menu();
+			break;		
+		// Deletar um repositório
+		case 34:
+			System.out.println("\n\n==== Deletar Repositório ====");
+			RepositorioMenu.deletarRepositorio();
+			break;			
 			
+		// ======= MENU TAREFA =======
 		// Menu Tarefa
 		case 4:
 			System.out.println("\n\n==== Menu Tarefa ====");
@@ -199,8 +229,22 @@ public enum Menu {
 		System.out.println("2 - Buscar por um repositório específico");
 		System.out.println("3 - Atualizar os dados de um repositório");
 		System.out.println("4 - Deletar um repositório");
-		System.out.println("5 - Listar todos os repositórioso");
+		System.out.println("5 - Listar todos os repositórios");
 		System.out.println("6 - Importar repositórios");
+		System.out.println("9 - Menu Principal");
+		System.out.println("0 - SAIR");
+	}
+	
+	private void getOptionsEditarRepositorioMenu() {
+		System.out.println("Digite o número referente à opção desejada: ");
+		System.out.println("1 - Trocar os dados do repositório");
+		System.out.println("2 - Adicionar um colaborador a esse repositório");
+		System.out.println("3 - Remover um colaborador desse repositório");
+		System.out.println("4 - Listar todos os colaboradores desse repositório");
+		System.out.println("5 - Criar uma tarefa para esse repositório");
+		System.out.println("6 - Listar todas as tarefas desse repositório");
+		System.out.println("7 - Importar tarefas");
+		System.out.println("8 - Voltar ao menu anterior");
 		System.out.println("9 - Menu Principal");
 		System.out.println("0 - SAIR");
 	}

@@ -45,7 +45,7 @@ public class ManipularRepositorioImpl implements ManipularRepositorio {
 	}
 
 	public Repositorio editarRepositorio(Repositorio repositorio) {
-		String sql = "UPDATE repositorios SET nome_repositorio = ?, descricao_repositorio = ?, tipo_repositorio = ?, usuario_owner = ? WHERE id = ?;";
+		String sql = "UPDATE repositorios SET nome_repositorio = ?, descricao_repositorio = ?, tipo_repositorio = ?, usuario_owner = ? WHERE id = ? and ativo = TRUE;";
 
 		try {
 			conexao = new ConexaoJDBC();
@@ -74,7 +74,7 @@ public class ManipularRepositorioImpl implements ManipularRepositorio {
 		ManipularUsuarioImpl usuarioDAO = new ManipularUsuarioImpl();
 		Repositorio repositorioRet = new Repositorio();
 
-		String sql = "SELECT * FROM repositorios WHERE id = ?;";
+		String sql = "SELECT * FROM repositorios WHERE id = ? and ativo = TRUE;";
 
 		try {
 			conexao = new ConexaoJDBC();
@@ -101,7 +101,7 @@ public class ManipularRepositorioImpl implements ManipularRepositorio {
 	}
 
 	public List<Repositorio> buscarPorQualquerCampo(String coluna, String valor) {
-		String sql = "SELECT * FROM repositorios WHERE " + coluna + " = \'" + valor + "\';";
+		String sql = "SELECT * FROM repositorios WHERE LOWER(" + coluna + ") = LOWER(\'" + valor + "\') and ativo = TRUE;";
 		List<Repositorio> repositorios = new ArrayList<Repositorio>();
 		ManipularUsuarioImpl usuarioDAO = new ManipularUsuarioImpl();
 
@@ -132,7 +132,7 @@ public class ManipularRepositorioImpl implements ManipularRepositorio {
 	}
 
 	public List<Usuario> listarUsuariosPorRepositorio(Repositorio repositorio) {
-		String sql = "SELECT * FROM usuarios_repositorios WHERE id_repositorio = ?;";
+		String sql = "SELECT * FROM usuarios_repositorios ur JOIN repositorios r ON (ur.id_repositorio = r.id) WHERE id_repositorio = ? and r.ativo = TRUE;";
 		List<Usuario> usuarios = new ArrayList<Usuario>();
 
 		try {
@@ -164,7 +164,7 @@ public class ManipularRepositorioImpl implements ManipularRepositorio {
 	}
 
 	public List<Repositorio> listarRepositoriosPorUsuario(Usuario usuario) {
-		String sql = "SELECT * FROM usuarios_repositorios WHERE id_usuario = ?;";
+		String sql = "SELECT * FROM usuarios_repositorios ur JOIN repositorios r ON (ur.id_repositorio = r.id) WHERE id_usuario = ? and r.ativo = TRUE;";
 		List<Repositorio> repositorios = new ArrayList<Repositorio>();
 
 		try {
@@ -228,7 +228,23 @@ public class ManipularRepositorioImpl implements ManipularRepositorio {
 	}
 
 	public void desativarRepositorio(Repositorio repositorio) {
-		// TODO Auto-generated method stub
+		String sql = "UPDATE repositorios SET ativo = FALSE WHERE id = ?;";
+
+		try {
+			conexao = new ConexaoJDBC();
+			PreparedStatement ps = conexao.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+			ps.setInt(1, repositorio.getIdRepositorio());
+
+			int linhasInseridas = ps.executeUpdate();
+			if (linhasInseridas == 1) {
+				ps.getGeneratedKeys().next();
+				System.out.println("Repositório Deletado com suscesso.");
+			}
+
+		} catch (Exception e) {
+			System.out.println("Falha ao deletar o Repositório " + repositorio.getNomeRepositorio() + " ID: "
+					+ repositorio.getIdRepositorio() + " Erro: " + e);
+		}
 
 	}
 

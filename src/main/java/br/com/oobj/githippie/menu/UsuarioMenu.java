@@ -86,11 +86,11 @@ public class UsuarioMenu implements IMenu {
 		System.out.println("Digite o Nome ou Email do usuário que deseja localizar: ");
 		String valorAConsultar = ent.nextLine();
 
-		int[] usuariosLocalizado = Utils.buscarPorEmail(valorAConsultar);
+		int[] usuariosLocalizado = buscarPorEmail(valorAConsultar);
 		if (usuariosLocalizado.length > 0) {
 			Menu.USUARIO.getMenu();
 		}
-		usuariosLocalizado = Utils.buscarPorNome(valorAConsultar);
+		usuariosLocalizado = buscarPorNome(valorAConsultar);
 		if (usuariosLocalizado.length == 0) {
 			System.out.println("Nenhum usuário localizado com os dados informados.");
 		}
@@ -104,7 +104,7 @@ public class UsuarioMenu implements IMenu {
 		System.out.println("Digite o Nome ou Email do usuário que deseja editar: ");
 		String valorAConsultar = ent.nextLine();
 
-		int[] usuariosLocalizado = Utils.buscarPorEmail(valorAConsultar);
+		int[] usuariosLocalizado = buscarPorEmail(valorAConsultar);
 		if (usuariosLocalizado.length == 1) {
 			System.out.println("Confirmar a edição desse usuário? \nS - Sim \nN - Não");
 			if (confirmarOperacoesSimNao()) {
@@ -113,7 +113,7 @@ public class UsuarioMenu implements IMenu {
 			Menu.USUARIO.getMenu();
 		}
 
-		usuariosLocalizado = Utils.buscarPorNome(valorAConsultar);
+		usuariosLocalizado = buscarPorNome(valorAConsultar);
 		if (usuariosLocalizado.length == 1) {
 			System.out.println("Confirmar a edição desse usuário? \nS - Sim \nN - Não");
 			if (confirmarOperacoesSimNao()) {
@@ -150,7 +150,7 @@ public class UsuarioMenu implements IMenu {
 		System.out.println("Digite o Nome ou Email do usuário que deseja deletar: ");
 		String valorAConsultar = ent.nextLine();
 
-		int[] usuariosLocalizado = Utils.buscarPorEmail(valorAConsultar);
+		int[] usuariosLocalizado = buscarPorEmail(valorAConsultar);
 		if (usuariosLocalizado.length == 1) {
 			System.out.println("Confirmar a exclusão desse usuário? \nS - Sim \nN - Não");
 			if (confirmarOperacoesSimNao()) {
@@ -158,7 +158,7 @@ public class UsuarioMenu implements IMenu {
 			}
 			Menu.USUARIO.getMenu();
 		}
-		usuariosLocalizado = Utils.buscarPorNome(valorAConsultar);
+		usuariosLocalizado = buscarPorNome(valorAConsultar);
 		if (usuariosLocalizado.length == 1) {
 			System.out.println("Confirmar a exclusão desse usuário? \nS - Sim \nN - Não");
 			if (confirmarOperacoesSimNao()) {
@@ -197,15 +197,7 @@ public class UsuarioMenu implements IMenu {
 		System.out.println("Usuários cadastrados Localizados: " + usuarios.size());
 
 		for (Usuario usuario : usuarios) {
-			System.out.println("------------------------------------------------------------------------------");
-			System.out.println("ID usuário: " + usuario.getIdUsuario());
-			System.out.println("Nome usuário: " + usuario.getNomeUsuario() + " " + usuario.getSobreNomeUsuario());
-			System.out.println("Email usuário: " + usuario.getEmailUsuario());
-			System.out.println("Sexo usuário: " + usuario.getSexo());
-			System.out.println("URL Linkedin usuário: " + usuario.getUrlLinkedin());
-			System.out.println("Plano usuário: " + usuario.getPlano().name());
-			System.out.println("Data de cadastro usuário: " + usuario.getDataCadastro());
-			System.out.println("------------------------------------------------------------------------------");
+			printarUsuario(usuario);
 		}
 		Menu.USUARIO.getMenu();
 	}
@@ -332,18 +324,53 @@ public class UsuarioMenu implements IMenu {
 		int[] ids = new int[1];
 
 		if (usuarioEncontrado.getIdUsuario() > 0) {
-			System.out.println("------------------------------------------------------------------------------");
-			System.out.println("ID usuário: " + usuarioEncontrado.getIdUsuario());
-			System.out.println("Nome usuário: " + usuarioEncontrado.getNomeUsuario() + " "
-					+ usuarioEncontrado.getSobreNomeUsuario());
-			System.out.println("Email usuário: " + usuarioEncontrado.getEmailUsuario());
-			System.out.println("Sexo usuário: " + usuarioEncontrado.getSexo());
-			System.out.println("URL Linkedin usuário: " + usuarioEncontrado.getUrlLinkedin());
-			System.out.println("Plano usuário: " + usuarioEncontrado.getPlano().name());
-			System.out.println("Data de cadastro usuário: " + usuarioEncontrado.getDataCadastro());
-			System.out.println("------------------------------------------------------------------------------");
+			printarUsuario(usuarioEncontrado);
 			ids[0] = usuarioEncontrado.getIdUsuario();
 		}
 		return ids;
+	}
+	
+	public static int[] buscarPorEmail(String email) {
+		List<Usuario> usuarioEncontrado;
+		ManipularUsuarioImpl usuarioDAO = new ManipularUsuarioImpl();
+		usuarioEncontrado = usuarioDAO.consultarPorQualquerColuna("email_usuario", email);
+		int[] ids = new int[usuarioEncontrado.size()];
+
+		if (usuarioEncontrado.size() == 1) {
+			System.out.println("Usuário(s) Encontrado(s): " + usuarioEncontrado.size());
+			printarUsuario(usuarioEncontrado.get(0));
+			ids[0] = usuarioEncontrado.get(0).getIdUsuario();
+		}
+		return ids;
+	}
+
+	public static int[] buscarPorNome(String nome) {
+		List<Usuario> usuarioEncontrado;
+		ManipularUsuarioImpl usuarioDAO = new ManipularUsuarioImpl();
+		usuarioEncontrado = usuarioDAO.consultarPorQualquerColuna("nome_usuario", nome);
+		int[] ids = new int[usuarioEncontrado.size()];
+		if (usuarioEncontrado.size() == 0) {
+			return ids;
+		}
+		System.out.println("Usuário(s) Encontrado(s): " + usuarioEncontrado.size());
+		int x = 0;
+		for (Usuario usuario : usuarioEncontrado) {
+			printarUsuario(usuario);
+			ids[x] = usuario.getIdUsuario();
+			x++;
+		}
+		return ids;
+	}
+
+	public static void printarUsuario(Usuario usuario) {
+		System.out.println("------------------------------------------------------------------------------");
+		System.out.println("ID usuário: " + usuario.getIdUsuario());
+		System.out.println("Nome usuário: " + usuario.getNomeUsuario() + " " + usuario.getSobreNomeUsuario());
+		System.out.println("Email usuário: " + usuario.getEmailUsuario());
+		System.out.println("Sexo usuário: " + usuario.getSexo());
+		System.out.println("URL Linkedin usuário: " + usuario.getUrlLinkedin());
+		System.out.println("Plano usuário: " + usuario.getPlano().name());
+		System.out.println("Data de cadastro usuário: " + usuario.getDataCadastro());
+		System.out.println("------------------------------------------------------------------------------");
 	}
 }
